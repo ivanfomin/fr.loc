@@ -1,0 +1,38 @@
+
+services:
+
+    nginx:
+        build:
+            context: docker/nginx
+        ports:
+            -  "8080:80"
+        volumes:
+            -  ./:/app
+        depends_on:
+            -   php-fpm
+
+
+    php-fpm:
+        build:
+            context: docker/php-fpm
+        environment:
+            PHP_IDE_CONFIG: serverName=API
+        volumes:
+            -   ./:/app
+        depends_on:
+            -   my_db
+
+
+    my_db:
+        image: postgres
+        ports:
+            -   "5431:5432"
+        environment:
+            POSTGRES_PASSWORD: postgres
+        volumes:
+            -   pg_data_1:/var/lib/postgresql/data
+
+
+
+volumes:
+    pg_data_1:
